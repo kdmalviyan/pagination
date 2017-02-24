@@ -29,4 +29,26 @@ public class UserDao extends AbstractDao {
         session.close();
         return userInfos;
     }
+
+    /** @return */
+    public long getNumPages() {
+        long recordPerPage = Long.parseLong(environment.getRequiredProperty("pagination.recordperpage"));
+        long numPages = 0;
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        Query query = session.createQuery("SELECT COUNT(*) FROM UserInfo");
+        long count = (long) query.uniqueResult();
+        if (count != 0) {
+            if (count > recordPerPage)
+                numPages = count / recordPerPage;
+                if((count % recordPerPage) > 0){
+                    numPages = numPages +1;
+                }
+            else
+                numPages = 1;
+        }
+        session.getTransaction().commit();
+        session.close();
+        return numPages;
+    }
 }

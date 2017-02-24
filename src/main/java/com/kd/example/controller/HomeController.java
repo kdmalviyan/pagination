@@ -37,13 +37,13 @@ public class HomeController {
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
         String formattedDate = dateFormat.format(date);
         model.put("serverTime", formattedDate);
-        // prepareUsers(); this is used to populate some test records in database
+        //prepareUsers(); //this is used to populate some test records in database
         return "home";
     }
 
     @SuppressWarnings("unused")
     private void prepareUsers() {
-        for (int i = 1; i <= 50; i++) {
+        for (int i = 51; i <= 55; i++) {
             UserInfo userInfo = new UserInfo();
             userInfo.setUsername("username_" + i);
             userInfo.setAge(18 + i);
@@ -63,9 +63,15 @@ public class HomeController {
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String getUsers(int pageNum, Locale locale, ModelMap model) throws JsonGenerationException, JsonMappingException, IOException {
+        long numPages = userDao.getNumPages();
+        model.put("pageNum", pageNum);
+        if (pageNum == 0) {
+            model.put("page", "first");
+        } else if ((pageNum + 1) == numPages) {
+            model.put("page", "last");
+        }
         List<UserInfo> userInfos = userDao.getUsers(pageNum);
         model.put("users", mapper.writeValueAsString(userInfos));
-        model.put("pageNum", pageNum);
         return "users";
     }
 }
