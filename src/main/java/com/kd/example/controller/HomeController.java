@@ -12,10 +12,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.kd.example.hibernate.dao.UserDao;
 import com.kd.example.hibernate.entity.Address;
@@ -73,5 +78,12 @@ public class HomeController {
         List<UserInfo> userInfos = userDao.getUsers(pageNum);
         model.put("users", mapper.writeValueAsString(userInfos));
         return "users";
+    }
+    
+    @RequestMapping(value = "/user/create", method = RequestMethod.POST)
+    public ResponseEntity<UserInfo> createUser(@RequestBody UserInfo userInfo, UriComponentsBuilder ucBuilder) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(userInfo.getId()).toUri());
+        return new ResponseEntity<UserInfo>(userInfo, headers, HttpStatus.CREATED);
     }
 }

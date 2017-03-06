@@ -3,37 +3,31 @@
  */
 package com.kd.example.hibernate.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 /** @author kuldeep.singh */
-@Entity
-@Table(name = "USER_INFO")
 public class UserInfo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    public UserInfo(long id, String firstName, String lastName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
 
-    @Column(name = "USER_NAME", nullable = false, unique = true)
+    public UserInfo() {
+        // TODO Auto-generated constructor stub
+    }
+
+    private long id;
+
     private String username;
 
-    @Column(name = "FIRST_NAME", nullable = false, unique = false)
+    private String email;
+
     private String firstName;
 
-    @Column(name = "LAST_NAME", nullable = true, unique = false)
     private String lastName;
 
-    @Column(name = "AGE", nullable = true, unique = false)
     private int age;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Address.class)
     private Address address;
 
     public String getUsername() {
@@ -76,11 +70,46 @@ public class UserInfo {
         this.address = address;
     }
 
-    public int getId() {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (id ^ (id >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof UserInfo))
+            return false;
+        UserInfo other = (UserInfo) obj;
+        if (id != other.id)
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", address=" + address + ", email=" + email + "]";
     }
 }
